@@ -16,5 +16,22 @@ class MULTIPLAYERSESSIONS_API UMenu : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable)
 	void MenuSetup();
-	
+protected:
+	virtual  bool Initialize() override;
+private:
+	UPROPERTY(meta = (BindWidget))
+	class UButton* HostButton;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* JoinButton;
+
+	UFUNCTION()
+	void HostButtonClicked();
+	UFUNCTION()
+	void JoinButtonClicked();
+
+
+	/*
+	 * 设计用于处理所有在线会话功能的子系统
+	 */
+	class UMutiplayerSessionsSubsystem* MutiplayerSessionsSubsystem;
 };
