@@ -1,9 +1,11 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ // Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "OnlineSubsystem.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MenuSystemCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -61,5 +63,29 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+public:
+	//会话指针接口
+	IOnlineSessionPtr OnlineSessionInterface;
+	//TSharedPtr<class IOnlineSession, ESPMode::ThreadSafe> OnlineSessionInterface;
+
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void CreateGameSession();
+
+	UFUNCTION(BlueprintCallable)
+	void JoinGameSession();
+	
+	void OnCreeateSessionComplete(FName SessionName,bool bWasSuccessful);
+	void OnFindSessionsComplete(bool bWasSuccessful);
+	void OnJoSessionComplete(FName SessionName,EOnJoinSessionCompleteResult::Type Result);
+private:
+	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate;
+
+	FOnFindSessionsCompleteDelegate FindSessionsCompleteDelegate;
+	TSharedPtr<FOnlineSessionSearch> SessionSearch ;
+
+	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate;
 };
 
