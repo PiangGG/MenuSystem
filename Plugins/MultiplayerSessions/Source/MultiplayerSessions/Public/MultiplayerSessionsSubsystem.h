@@ -6,18 +6,26 @@
 #include "OnlineSessionSettings.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "MutiplayerSessionsSubsystem.generated.h"
+#include "MultiplayerSessionsSubsystem.generated.h"
 
-/**
+/*
+ * Delcaring我们自己的自定义委托，以便将回调绑定到Menu类
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete,bool,bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionsComlete,const TArray<FOnlineSessionSearchResult>& SessionResults,bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnJoinSessionsComlete,EOnJoinSessionCompleteResult::Type Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnDestroySessionsComlete,bool,bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnStartSessionsComlete,bool,bWasSuccessful);
+/**;
  * 
  */
 UCLASS()
-class MULTIPLAYERSESSIONS_API UMutiplayerSessionsSubsystem : public UGameInstanceSubsystem
+class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	UMutiplayerSessionsSubsystem();
+	UMultiplayerSessionsSubsystem();
 	
 	/*
 	 * 处理会话，Menu将调用这些函数
@@ -27,6 +35,15 @@ public:
 	void JoinSession(const FOnlineSessionSearchResult& SessionResult);
 	void DestroySession();
 	void StartSession();
+
+	/*
+	* 我们自己的习惯要将回调绑定到的菜单类的委托
+	 */
+	FMultiplayerOnCreateSessionComplete MultiplayerOnCreateSessionComplete;
+	FMultiplayerOnFindSessionsComlete MultiplayerOnFindSessionsComlete;
+	FMultiplayerOnJoinSessionsComlete MultiplayerOnJoinSessionsComlete;
+	FMultiplayerOnDestroySessionsComlete MultiplayerOnDestroySessionsComlete;
+	FMultiplayerOnStartSessionsComlete MultiplayerOnStartSessionsComlete;
  protected:
 	/*
 	 *我们将添加到联机会话界面委托列表中的委托的内部回调。
@@ -39,6 +56,8 @@ public:
 	void OnStartSessionComplete(FName SessionName,bool bWasSuccessful);
 private:
 	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<FOnlineSessionSettings> LastSessionSettings;
+	TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
 
 	/*
 	 *添加到联机会话界面委派列表。
@@ -58,5 +77,9 @@ private:
 	
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
+
+	bool bCreateSeesionOnDestroy{ false };
+	int32 LastNumPublicConnections;
+	FString LastMatchType; 
 	
 };

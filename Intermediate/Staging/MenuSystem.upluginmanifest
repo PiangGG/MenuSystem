@@ -3103,6 +3103,41 @@
 					}
 				]
 			}
+		},
+		{
+			"File": "../../../MenuSystem/Plugins/MultiplayerSessions/MultiplayerSessions.uplugin",
+			"Descriptor": 
+			{
+				"FileVersion": 3,
+				"Version": 1,
+				"VersionName": "1.0",
+				"FriendlyName": "MultiplayerSessions",
+				"Description": "一个多人游戏的插件",
+				"Category": "Other",
+				"CreatedBy": "Piang",
+				"CreatedByURL": "",
+				"DocsURL": "",
+				"MarketplaceURL": "",
+				"SupportURL": "",
+				"CanContainContent": true,
+				"Modules": [
+					{
+						"Name": "MultiplayerSessions",
+						"Type": "Runtime",
+						"LoadingPhase": "Default"
+					}
+				],
+				"Plugins": [
+					{
+						"Name": "OnlineSubsystem",
+						"Enabled": true
+					},
+					{
+						"Name": "OnlineSubsystemSteam",
+						"Enabled": true
+					}
+				]
+			}
 		}
 	]
 }
